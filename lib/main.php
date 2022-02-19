@@ -17,7 +17,7 @@ class Open_Charge_API
 
     private function __construct()
     {
-        \add_action( 'init', [ $this, 'register_open_charge_poi_cpt' ], 0 );
+        \add_action( 'init', [ $this, 'register_open_charge_poi_cpt' ], 1 );
         \add_action( 'wp_ajax_nopriv_get_poi_sites_from_api', [ $this, 'get_poi_sites_from_api' ], 1);
         \add_action( 'wp_ajax_get_poi_sites_from_api', [ $this, 'get_poi_sites_from_api' ], 1);
     }
@@ -33,7 +33,7 @@ class Open_Charge_API
         
     }
 
-    function delete_poi_sites_from_db() 
+    public function delete_poi_sites_from_db() 
     {
   
         global $wpdb;
@@ -43,7 +43,6 @@ class Open_Charge_API
         $wpdb->query("DELETE FROM wp_term_relationships WHERE object_id NOT IN (SELECT id FROM wp_posts)");
       
     }
-    // delete_poi_sites_from_db();
 
     public function get_poi_sites_from_api()
     {
@@ -54,7 +53,7 @@ class Open_Charge_API
 
         //https://api.openchargemap.io/v3/poi?key=de84fceb-fbc6-423d-912f-0b5e4dd44d56&countrycode=US&maxresults=2&verbose=false&opendata=true
 
-        $results = wp_remote_retrieve_body( wp_remote_get('https://api.openchargemap.io/v3/poi?key=' . Open_Charge_API::API_KEY . '&countrycode=US&maxresults=3&verbose=false&opendata=true') );
+        $results = wp_remote_retrieve_body( wp_remote_get('https://api.openchargemap.io/v3/poi?key=' . self::API_KEY . '&countrycode=US&maxresults=3&verbose=false&opendata=true') );
         
         file_put_contents( $file, "Imported Item" . FILE_APPEND );
 
