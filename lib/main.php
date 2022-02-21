@@ -57,10 +57,8 @@ class Open_Charge_API
         //https://api.openchargemap.io/v3/poi?key=de84fceb-fbc6-423d-912f-0b5e4dd44d56&countrycode=US&maxresults=2&verbose=false&opendata=true&chargepointid=100001
 
         $results = \wp_remote_retrieve_body( \wp_remote_get('https://api.openchargemap.io/v3/poi?key=' . self::API_KEY . '&countrycode=US&maxresults=3&verbose=false&opendata=true') );
-        
-        file_put_contents( $file, "Imported Item" . FILE_APPEND );
 
-        $results = json_decode( $results, true );
+        $results = \json_decode( $results, true );
 
         if( ! is_array( $results ) || empty( $results ) ) {
             return false;
@@ -93,7 +91,7 @@ class Open_Charge_API
             ]);
 
             if( \is_wp_error( $inserted_poi_site ) || $inserted_poi_site === 0 ) {
-                error_log( 'Could not insert' . $poi_site_slug );
+                \error_log( 'Could not insert' . $poi_site_slug );
                 continue;
             }
 
@@ -116,6 +114,8 @@ class Open_Charge_API
             foreach( $datafields as $key => $poi_site['ID'] ) {
                 \update_field( $key, $poi_site['ID'], $inserted_poi_site );
             }
+
+            \file_put_contents( $file, PHP_EOL . "Imported Item " . $poi_site_slug, FILE_APPEND );
 
             if( $i++ == 2 ) break;
 
